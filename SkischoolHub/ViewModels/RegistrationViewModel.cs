@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SkischoolHub.Services;
 using Models;
+using SkischoolHub.Services;
 
 namespace SkischoolHub.ViewModels;
 
@@ -44,26 +44,28 @@ public partial class RegistrationViewModel : ObservableObject
         HasError = false;
         ErrorMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
-            string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(FirstName) ||
+            string.IsNullOrWhiteSpace(LastName) ||
+            string.IsNullOrWhiteSpace(Email) ||
+            string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "Bitte füllen Sie alle Felder aus.";
+            ErrorMessage = "Bitte alle Felder ausfüllen.";
             HasError = true;
             return;
         }
 
         if (Password.Length < 6)
         {
-            ErrorMessage = "Das Passwort muss mindestens 6 Zeichen lang sein.";
+            ErrorMessage = "Passwort muss mindestens 6 Zeichen haben.";
             HasError = true;
             return;
         }
 
+        IsBusy = true;
+
         try
         {
-            IsBusy = true;
-
-            User newUser = new()
+            var user = new User
             {
                 FirstName = FirstName,
                 LastName = LastName,
@@ -71,23 +73,17 @@ public partial class RegistrationViewModel : ObservableObject
                 Password = Password
             };
 
-            bool success = await _apiService.RegisterUserAsync(newUser);
-            if (success)
+            var success = await _apiService.RegisterUserAsync(user);
+
+            if (!success)
             {
-                await Shell.Current.DisplayAlert("Erfolg", "Die Registrierung war erfolgreich.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");
-            }
-            else
-            {
-                ErrorMessage = "Die Registrierung ist fehlgeschlagen.";
+                ErrorMessage = "Registrierung fehlgeschlagen.";
                 HasError = true;
+                return;
             }
-        }
-        catch (HttpRequestException ex)
-        {
-            ErrorMessage = "Keine Verbindung zum Server möglich. Bitte überprüfen Sie, ob die API läuft.";
-            HasError = true;
-            System.Diagnostics.Debug.WriteLine($"Verbindungsfehler: {ex.Message}");
+
+            await Shell.Current.DisplayAlert("Erfolg", "Registrierung erfolgreich.", "OK");
+            await Shell.Current.GoToAsync("//LoginPage");
         }
         catch (Exception ex)
         {

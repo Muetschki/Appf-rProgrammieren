@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SkischoolHub.Services;
-using Models;
 
 namespace SkischoolHub.ViewModels;
 
@@ -45,22 +44,20 @@ public partial class LoginViewModel : ObservableObject
             return;
         }
 
+        IsBusy = true;
+
         try
         {
-            IsBusy = true;
-
             var user = await _apiService.LoginAsync(Email, Password);
 
-            if (user != null)
-            {
-                // Login erfolgreich - zur MainPage navigieren
-                await Shell.Current.GoToAsync("//MainPage");
-            }
-            else
+            if (user is null)
             {
                 ErrorMessage = "Ungültige E-Mail oder Passwort.";
                 HasError = true;
+                return;
             }
+
+            await Shell.Current.GoToAsync("//MainPage");
         }
         catch (Exception ex)
         {
@@ -76,6 +73,6 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToRegistrationAsync()
     {
-        await Shell.Current.GoToAsync("RegistrationPage");
+        await Shell.Current.GoToAsync("//RegistrationPage");
     }
 }

@@ -1,5 +1,5 @@
-using Models;
 using System.Net.Http.Json;
+using Models;
 
 namespace SkischoolHub.Services;
 
@@ -7,32 +7,32 @@ public class ApiService : IApiService
 {
     private readonly HttpClient _httpClient;
 
-    public ApiService()
+    public ApiService(HttpClient httpClient)
     {
-        _httpClient = new HttpClient
-        {
-            BaseAddress = new Uri("https://localhost:7001")
-        };
+        _httpClient = httpClient;
     }
 
     public async Task<User?> LoginAsync(string email, string password)
     {
+        var request = new
+        {
+            Email = email,
+            Password = password
+        };
+
         try
         {
-            var loginRequest = new { Email = email, Password = password };
-            var response = await _httpClient.PostAsJsonAsync("api/users/login", loginRequest);
+            var response = await _httpClient.PostAsJsonAsync("api/users/login", request);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<User>();
+                return null;
             }
 
-            System.Diagnostics.Debug.WriteLine($"Login fehlgeschlagen: {response.StatusCode}");
-            return null;
+            return await response.Content.ReadFromJsonAsync<User>();
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
             return null;
         }
     }
@@ -41,36 +41,12 @@ public class ApiService : IApiService
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"Sende Registrierung für: {user.Email}");
             var response = await _httpClient.PostAsJsonAsync("api/users", user);
-            System.Diagnostics.Debug.WriteLine($"Response Status: {response.StatusCode}");
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine($"Fehler-Inhalt: {content}");
-            }
-            
             return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"Registration error: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
             return false;
-        }
-    }
-
-    public async Task<User?> GetUserByIdAsync(int id)
-    {
-        try
-        {
-            return await _httpClient.GetFromJsonAsync<User>($"api/users/{id}");
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Get user error: {ex.Message}");
-            return null;
         }
     }
 }

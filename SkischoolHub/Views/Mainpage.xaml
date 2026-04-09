@@ -1,59 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:SkischoolHub.ViewModels"
-             x:Class="SkischoolHub.MainPage"
-             x:DataType="vm:MainViewModel"
-             Title="SkischoolHub">
+<ContentPage
+    x:Class="SkischoolHub.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Start">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label
+            FontSize="28"
+            HorizontalOptions="Center"
+            Text="Willkommen" />
 
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="Willkommen bei SkischoolHub" />
-
-            <Label 
-                Text="Willkommen im SkischoolHub!"
-                FontSize="32"
-                FontAttributes="Bold"
-                HorizontalOptions="Center"
-                Margin="0,40,0,20" />
-
-            <Label 
-                Text="Hier können Sie Ihre Skikurse verwalten."
-                FontSize="18"
-                HorizontalOptions="Center" 
-                Margin="0,0,0,40"/>
-
-            <Button 
-                Text="Meine Kurse"
-                HorizontalOptions="Fill"
-                Margin="0,0,0,10" />
-
-            <Button 
-                Text="Neuer Kurs"
-                HorizontalOptions="Fill"
-                Margin="0,0,0,10" />
-
-            <Button 
-                Text="Profil"
-                HorizontalOptions="Fill"
-                Margin="0,0,0,10" />
-
-            <Button 
-                Text="Logout"
-                Command="{Binding LogoutCommand}"
-                HorizontalOptions="Fill"
-                BackgroundColor="Transparent"
-                TextColor="{StaticResource Primary}"
-                Margin="0,40,0,0" />
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+        <Button
+            Text="Logout"
+            Command="{Binding LogoutCommand}" />
+    </VerticalStackLayout>
 </ContentPage>
