@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Models/Models.csproj" />
+  <Project Path="ORM/ORM.csproj" />
+  <Project Path="SkischoolHub/SkischoolHub.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="WEB-API/WEB-API.csproj" />
+</Solution>

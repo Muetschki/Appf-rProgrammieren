@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkischoolHub.Views.LoginPage"
+             Title="Login">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Willkommen zurück!"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,10"/>
+
+            <Label Text="Melden Sie sich an, um fortzufahren"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,30"/>
+
+            <Label Text="E-Mail" FontSize="16"/>
+            <Entry Text="{Binding Email}"
+                   Placeholder="beispiel@email.com"
+                   Keyboard="Email"/>
+
+            <Label Text="Passwort" FontSize="16"/>
+            <Entry Text="{Binding Password}"
+                   Placeholder="Passwort"
+                   IsPassword="True"/>
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding HasError}"
+                   FontSize="14"/>
+
+            <Button Text="Anmelden"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    Margin="0,10,0,0"/>
+
+            <Button Text="Noch kein Konto? Registrieren"
+                    Command="{Binding NavigateToRegistrationCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource Primary}"
+                    Margin="0,5,0,0"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
