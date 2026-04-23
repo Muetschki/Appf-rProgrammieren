@@ -17,7 +17,7 @@
         Route="RegistrationPage" />
 
     <ShellContent
-        Title="Main"
+        Title="Start"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

@@ -9,4 +9,9 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
     }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//LoginPage");
+    }
 }

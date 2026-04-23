@@ -1,18 +1,79 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="SkischoolHub.Views.MainPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Start">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkischoolHub.Views.MainPage"
+             Title="Startseite"
+             BackgroundColor="#F7F8FA">
 
-    <VerticalStackLayout Padding="24" Spacing="16">
-        <Label
-            FontSize="28"
-            HorizontalOptions="Center"
-            Text="Willkommen" />
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="18">
 
-        <Button
-            Text="Logout"
-            Command="{Binding LogoutCommand}" />
-    </VerticalStackLayout>
+            <Border StrokeThickness="0" BackgroundColor="{StaticResource Primary}" StrokeShape="RoundRectangle 20">
+                <Grid Padding="20" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Text="Willkommen zurück 👋"
+                           TextColor="White"
+                           FontSize="24"
+                           FontAttributes="Bold" />
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Text="Du bist erfolgreich angemeldet."
+                           TextColor="#EAF3FF"
+                           FontSize="14" />
+                </Grid>
+            </Border>
+
+            <Label Text="Schnellzugriff"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="#1F2937" />
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
+
+                <Border Grid.Row="0" Grid.Column="0" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="16" Spacing="8">
+                        <Label Text="📅" FontSize="24" />
+                        <Label Text="Kurse" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="Deine gebuchten Kurse anzeigen." FontSize="12" TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="16" Spacing="8">
+                        <Label Text="🎿" FontSize="24" />
+                        <Label Text="Skilehrer" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="Lehrer und Verfügbarkeiten prüfen." FontSize="12" TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="0" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="16" Spacing="8">
+                        <Label Text="💳" FontSize="24" />
+                        <Label Text="Zahlungen" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="Offene und vergangene Zahlungen." FontSize="12" TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout Padding="16" Spacing="8">
+                        <Label Text="⚙️" FontSize="24" />
+                        <Label Text="Einstellungen" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="Profil und App-Einstellungen." FontSize="12" TextColor="#6B7280" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+
+            <Button Text="Abmelden"
+                    Clicked="OnLogoutClicked"
+                    BackgroundColor="#EF4444"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="48"
+                    Margin="0,8,0,20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
