@@ -32,6 +32,7 @@ public static class MauiProgram
             BaseAddress = new Uri(baseUrl)
         });
 
+        builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddSingleton<IApiService, ApiService>();
 
         builder.Services.AddTransient<LoginViewModel>();

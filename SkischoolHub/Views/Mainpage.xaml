@@ -1,79 +1,83 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SkischoolHub.ViewModels"
              x:Class="SkischoolHub.Views.MainPage"
-             Title="Startseite"
-             BackgroundColor="#F7F8FA">
+             x:Name="MainPageRoot"
+             x:DataType="vm:MainViewModel"
+             Title="Skikurse"
+             BackgroundColor="#F3F6FB">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="18">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20" RowSpacing="14">
+        <Border Grid.Row="0" StrokeThickness="0" StrokeShape="RoundRectangle 24">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="1,1">
+                    <GradientStop Color="#2563EB" Offset="0.0" />
+                    <GradientStop Color="#1D4ED8" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <VerticalStackLayout Padding="20" Spacing="4">
+                <Label Text="{Binding WelcomeText}" FontSize="24" FontAttributes="Bold" TextColor="White" />
+                <Label Text="Buche hier deinen nächsten Skikurs." FontSize="13" TextColor="#DBEAFE" />
+            </VerticalStackLayout>
+        </Border>
 
-            <Border StrokeThickness="0" BackgroundColor="{StaticResource Primary}" StrokeShape="RoundRectangle 20">
-                <Grid Padding="20" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                    <Label Grid.Row="0"
-                           Grid.Column="0"
-                           Text="Willkommen zurück 👋"
-                           TextColor="White"
-                           FontSize="24"
-                           FontAttributes="Bold" />
-                    <Label Grid.Row="1"
-                           Grid.Column="0"
-                           Text="Du bist erfolgreich angemeldet."
-                           TextColor="#EAF3FF"
-                           FontSize="14" />
-                </Grid>
-            </Border>
-
-            <Label Text="Schnellzugriff"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   TextColor="#1F2937" />
-
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12">
-
-                <Border Grid.Row="0" Grid.Column="0" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
-                    <VerticalStackLayout Padding="16" Spacing="8">
-                        <Label Text="📅" FontSize="24" />
-                        <Label Text="Kurse" FontAttributes="Bold" FontSize="16" />
-                        <Label Text="Deine gebuchten Kurse anzeigen." FontSize="12" TextColor="#6B7280" />
-                    </VerticalStackLayout>
-                </Border>
-
-                <Border Grid.Row="0" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
-                    <VerticalStackLayout Padding="16" Spacing="8">
-                        <Label Text="🎿" FontSize="24" />
-                        <Label Text="Skilehrer" FontAttributes="Bold" FontSize="16" />
-                        <Label Text="Lehrer und Verfügbarkeiten prüfen." FontSize="12" TextColor="#6B7280" />
-                    </VerticalStackLayout>
-                </Border>
-
-                <Border Grid.Row="1" Grid.Column="0" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
-                    <VerticalStackLayout Padding="16" Spacing="8">
-                        <Label Text="💳" FontSize="24" />
-                        <Label Text="Zahlungen" FontAttributes="Bold" FontSize="16" />
-                        <Label Text="Offene und vergangene Zahlungen." FontSize="12" TextColor="#6B7280" />
-                    </VerticalStackLayout>
-                </Border>
-
-                <Border Grid.Row="1" Grid.Column="1" StrokeThickness="0" BackgroundColor="White" StrokeShape="RoundRectangle 16">
-                    <VerticalStackLayout Padding="16" Spacing="8">
-                        <Label Text="⚙️" FontSize="24" />
-                        <Label Text="Einstellungen" FontAttributes="Bold" FontSize="16" />
-                        <Label Text="Profil und App-Einstellungen." FontSize="12" TextColor="#6B7280" />
-                    </VerticalStackLayout>
-                </Border>
-
-            </Grid>
-
-            <Button Text="Abmelden"
-                    Clicked="OnLogoutClicked"
-                    BackgroundColor="#EF4444"
-                    TextColor="White"
-                    FontAttributes="Bold"
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+            <Button Text="Aktualisieren"
+                    Command="{Binding LoadDataCommand}"
+                    BackgroundColor="White"
+                    TextColor="#1F2937"
                     CornerRadius="12"
-                    HeightRequest="48"
-                    Margin="0,8,0,20" />
+                    HorizontalOptions="Start" />
+            <Button Text="Abmelden"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#111827"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HorizontalOptions="EndAndExpand" />
+        </HorizontalStackLayout>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="10">
+            <Label Text="{Binding ErrorMessage}" TextColor="#DC2626" IsVisible="{Binding HasError}" />
+
+            <CollectionView Grid.Row="1" ItemsSource="{Binding Courses}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Spacing="8" Padding="0,40,0,0">
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+                        <Label Text="Keine Kurse gefunden." HorizontalOptions="Center" IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CourseCardViewModel">
+                        <Border BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 18" Margin="0,0,0,10">
+                            <VerticalStackLayout Padding="16" Spacing="8">
+                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+                                <Label Text="{Binding Description}" FontSize="13" TextColor="#4B5563" />
+
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="4">
+                                    <Label Grid.Row="0" Text="{Binding DateText}" FontSize="12" TextColor="#6B7280" />
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding PriceText}" FontSize="12" FontAttributes="Bold" TextColor="#1D4ED8" />
+                                    <Label Grid.Row="1" Text="{Binding StatusText}" FontSize="12" TextColor="#059669" />
+                                </Grid>
+
+                                <DatePicker Date="{Binding Date, Mode=TwoWay}"
+                                            Format="dd.MM.yyyy"
+                                            HorizontalOptions="Start"
+                                            WidthRequest="150" />
+
+                                <Button Text="{Binding ActionText}"
+                                        Command="{Binding Source={x:Reference MainPageRoot}, Path=BindingContext.BookCourseCommand}"
+                                        CommandParameter="{Binding .}"
+                                        IsEnabled="{Binding CanBook}"
+                                        CornerRadius="10"
+                                        BackgroundColor="#2563EB"
+                                        TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
 </ContentPage>

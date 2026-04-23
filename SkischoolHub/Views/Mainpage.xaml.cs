@@ -10,8 +10,13 @@ public partial class MainPage : ContentPage
         BindingContext = vm;
     }
 
-    private async void OnLogoutClicked(object sender, EventArgs e)
+    protected override async void OnAppearing()
     {
-        await Shell.Current.GoToAsync("//LoginPage");
+        base.OnAppearing();
+
+        if (BindingContext is MainViewModel vm)
+        {
+            await vm.LoadDataCommand.ExecuteAsync(null);
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace SkischoolHub.ViewModels;
 public partial class LoginViewModel : ObservableObject
 {
     private readonly IApiService _apiService;
+    private readonly IUserSessionService _userSessionService;
 
     [ObservableProperty]
     private string email = string.Empty;
@@ -23,9 +24,10 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    public LoginViewModel(IApiService apiService)
+    public LoginViewModel(IApiService apiService, IUserSessionService userSessionService)
     {
         _apiService = apiService;
+        _userSessionService = userSessionService;
     }
 
     [RelayCommand]
@@ -57,6 +59,7 @@ public partial class LoginViewModel : ObservableObject
                 return;
             }
 
+            _userSessionService.CurrentUser = user;
             await Shell.Current.GoToAsync("//MainPage");
         }
         catch (Exception ex)

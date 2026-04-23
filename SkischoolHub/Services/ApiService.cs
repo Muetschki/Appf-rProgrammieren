@@ -49,4 +49,54 @@ public class ApiService : IApiService
             return false;
         }
     }
+
+    public async Task<List<SkiCourse>> GetSkiCoursesAsync()
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<SkiCourse>>("api/skicourses") ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    public async Task<List<CourseBooking>> GetUserBookingsAsync(int userId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<CourseBooking>>($"api/skicourses/user/{userId}/bookings") ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    public async Task<bool> BookCourseAsync(int userId, int courseId)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/skicourses/{courseId}/bookings", new { UserId = userId });
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> CancelCourseBookingAsync(int userId, int courseId)
+    {
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"api/skicourses/{courseId}/bookings/{userId}");
+            return response.IsSuccessStatusCode;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

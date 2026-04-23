@@ -4,6 +4,8 @@ using ORM;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // DbContext mit MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -23,6 +25,71 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    await db.Database.ExecuteSqlRawAsync(@"
+        CREATE TABLE IF NOT EXISTS `SkiCourses` (
+            `Id` INT NOT NULL AUTO_INCREMENT,
+            `Title` VARCHAR(120) NOT NULL,
+            `Description` VARCHAR(400) NOT NULL,
+            `Date` DATETIME(6) NOT NULL,
+            `Price` DECIMAL(10,2) NOT NULL,
+            `MaxParticipants` INT NOT NULL,
+            PRIMARY KEY (`Id`)
+        );");
+
+    await db.Database.ExecuteSqlRawAsync(@"
+        CREATE TABLE IF NOT EXISTS `CourseBookings` (
+            `Id` INT NOT NULL AUTO_INCREMENT,
+            `UserId` INT NOT NULL,
+            `SkiCourseId` INT NOT NULL,
+            `BookedAt` DATETIME(6) NOT NULL,
+            PRIMARY KEY (`Id`),
+            CONSTRAINT `FK_CourseBookings_Users_UserId` FOREIGN KEY (`UserId`) REFERENCES `Users` (`Id`) ON DELETE CASCADE,
+            CONSTRAINT `FK_CourseBookings_SkiCourses_SkiCourseId` FOREIGN KEY (`SkiCourseId`) REFERENCES `SkiCourses` (`Id`) ON DELETE CASCADE,
+            UNIQUE KEY `IX_CourseBookings_UserId_SkiCourseId` (`UserId`,`SkiCourseId`)
+        );");
+
+    if (!await db.SkiCourses.AnyAsync())
+    {
+        db.SkiCourses.AddRange(
+            new Models.SkiCourse
+            {
+                Title = "Anfänger Kurs",
+                Description = "Die perfekte Einführung ins Skifahren.",
+                Date = new DateTime(2026, 1, 10, 9, 0, 0),
+                Price = 89.00m,
+                MaxParticipants = 12
+            },
+            new Models.SkiCourse
+            {
+                Title = "Fortgeschrittene Technik",
+                Description = "Verbessern Sie Ihre Technik mit Profi-Tipps.",
+                Date = new DateTime(2026, 1, 17, 9, 0, 0),
+                Price = 119.00m,
+                MaxParticipants = 10
+            },
+            new Models.SkiCourse
+            {
+                Title = "Carving Intensiv",
+                Description = "Intensivtraining für saubere Carving-Schwünge.",
+                Date = new DateTime(2026, 1, 24, 9, 0, 0),
+                Price = 129.00m,
+                MaxParticipants = 8
+            });
+
+        await db.SaveChangesAsync();
+    }
+}
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");

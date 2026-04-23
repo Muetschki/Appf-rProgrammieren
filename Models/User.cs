@@ -12,4 +12,22 @@ namespace Models
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
+
+    public class SkiCourse
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public decimal Price { get; set; }
+        public int MaxParticipants { get; set; }
+    }
+
+    public class CourseBooking
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int SkiCourseId { get; set; }
+        public DateTime BookedAt { get; set; }
+    }
 }
