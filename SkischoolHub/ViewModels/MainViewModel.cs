@@ -34,8 +34,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LoadDataAsync()
     {
-        if (IsBusy)
-            return;
+        if (IsBusy) return;
 
         var currentUser = _userSessionService.CurrentUser;
         if (currentUser is null)
@@ -83,8 +82,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task BookCourseAsync(CourseCardViewModel? course)
     {
-        if (course is null || IsBusy)
-            return;
+        if (course is null || IsBusy) return;
 
         var currentUser = _userSessionService.CurrentUser;
         if (currentUser is null)
@@ -115,13 +113,9 @@ public partial class MainViewModel : ObservableObject
             course.IsBooked = !course.IsBooked;
 
             if (course.IsBooked)
-            {
                 await Shell.Current.DisplayAlert("Erfolg", "Skikurs erfolgreich gebucht.", "OK");
-            }
             else
-            {
                 await Shell.Current.DisplayAlert("Erfolg", "Buchung erfolgreich storniert.", "OK");
-            }
         }
         finally
         {
@@ -132,16 +126,17 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task LogoutAsync()
     {
-        var confirm = await Shell.Current.DisplayAlert(
-            "Logout",
-            "Möchten Sie sich wirklich abmelden?",
-            "Ja",
-            "Nein");
-
+        var confirm = await Shell.Current.DisplayAlert("Logout", "Möchten Sie sich wirklich abmelden?", "Ja", "Nein");
         if (confirm)
         {
             _userSessionService.Clear();
             await Shell.Current.GoToAsync("//LoginPage");
         }
+    }
+
+    [RelayCommand]
+    private async Task NavigateToPrivateLessonsAsync()
+    {
+        await Shell.Current.GoToAsync("//PrivateLessonPage");
     }
 }

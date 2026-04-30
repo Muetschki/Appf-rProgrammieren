@@ -24,17 +24,22 @@
 
         <HorizontalStackLayout Grid.Row="1" Spacing="10">
             <Button Text="Aktualisieren"
-                    Command="{Binding LoadDataCommand}"
-                    BackgroundColor="White"
-                    TextColor="#1F2937"
-                    CornerRadius="12"
-                    HorizontalOptions="Start" />
+            Command="{Binding LoadDataCommand}"
+            BackgroundColor="White"
+            TextColor="#1F2937"
+            CornerRadius="12"
+            HorizontalOptions="Start" />
+            <Button Text="🎿 Privatstunde"
+            Command="{Binding NavigateToPrivateLessonsCommand}"
+            BackgroundColor="#7C3AED"
+            TextColor="White"
+            CornerRadius="12" />
             <Button Text="Abmelden"
-                    Command="{Binding LogoutCommand}"
-                    BackgroundColor="#111827"
-                    TextColor="White"
-                    CornerRadius="12"
-                    HorizontalOptions="EndAndExpand" />
+            Command="{Binding LogoutCommand}"
+            BackgroundColor="#111827"
+            TextColor="White"
+            CornerRadius="12"
+            HorizontalOptions="EndAndExpand" />
         </HorizontalStackLayout>
 
         <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="10">

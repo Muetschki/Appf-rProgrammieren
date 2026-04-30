@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SkischoolHub.ViewModels"
+             x:Class="SkischoolHub.Views.PrivateLessonPage"
+             x:Name="PrivateLessonPageRoot"
+             x:DataType="vm:PrivateLessonViewModel"
+             Title="Privatstunden"
+             BackgroundColor="#F3F6FB">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="20" RowSpacing="14">
+
+            <!-- Header -->
+            <Border Grid.Row="0" StrokeThickness="0" StrokeShape="RoundRectangle 24">
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="1,1">
+                        <GradientStop Color="#7C3AED" Offset="0.0" />
+                        <GradientStop Color="#5B21B6" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <VerticalStackLayout Padding="20" Spacing="4">
+                    <Label Text="🎿 Privatstunden" FontSize="24" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="Buche eine persönliche Unterrichtsstunde mit einem Profi-Lehrer." FontSize="13" TextColor="#EDE9FE" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Aktions-Buttons -->
+            <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                <Button Text="← Zurück"
+                        Command="{Binding NavigateBackCommand}"
+                        BackgroundColor="White"
+                        TextColor="#1F2937"
+                        CornerRadius="12" />
+                <Button Text="+ Privatstunde buchen"
+                        Command="{Binding ToggleBookingFormCommand}"
+                        BackgroundColor="#7C3AED"
+                        TextColor="White"
+                        CornerRadius="12"
+                        HorizontalOptions="EndAndExpand" />
+            </HorizontalStackLayout>
+
+            <!-- Buchungsformular -->
+            <Border Grid.Row="2"
+                    IsVisible="{Binding IsBookingVisible}"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    Padding="20">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Neue Privatstunde buchen" FontSize="18" FontAttributes="Bold" TextColor="#111827" />
+
+                    <Border IsVisible="{Binding HasError}"
+                            BackgroundColor="#FEF2F2"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,8">
+                        <Label Text="{Binding ErrorMessage}" TextColor="#DC2626" FontSize="13" />
+                    </Border>
+
+                    <!-- Datum -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Datum" FontSize="13" TextColor="#6B7280" FontAttributes="Bold" />
+                        <Border StrokeThickness="1" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10" Padding="12,4">
+                            <DatePicker Date="{Binding SelectedDate, Mode=TwoWay}"
+                                        Format="dd.MM.yyyy"
+                                        TextColor="#111827" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Uhrzeit -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Uhrzeit" FontSize="13" TextColor="#6B7280" FontAttributes="Bold" />
+                        <Border StrokeThickness="1" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10" Padding="12,4">
+                            <Picker Title="Uhrzeit wählen"
+                                    ItemsSource="{Binding TimeSlots}"
+                                    SelectedItem="{Binding SelectedTimeSlot, Mode=TwoWay}"
+                                    TextColor="#111827" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Lehrer -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Wunschlehrer" FontSize="13" TextColor="#6B7280" FontAttributes="Bold" />
+                        <Border StrokeThickness="1" Stroke="#E5E7EB" StrokeShape="RoundRectangle 10" Padding="12,4">
+                            <Picker Title="Lehrer auswählen"
+                                    ItemsSource="{Binding Teachers}"
+                                    SelectedItem="{Binding SelectedTeacher, Mode=TwoWay}"
+                                    ItemDisplayBinding="{Binding FullName}"
+                                    TextColor="#111827" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Spezialisierung des gewählten Lehrers -->
+                    <Border IsVisible="{Binding SelectedTeacher, Converter={StaticResource NullToBoolConverter}}"
+                            BackgroundColor="#F5F3FF"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,8">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="⭐" FontSize="14" />
+                            <Label Text="{Binding SelectedTeacher.Specialty}"
+                                   TextColor="#5B21B6"
+                                   FontSize="13"
+                                   FontAttributes="Italic" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Preis -->
+                    <Border BackgroundColor="#EFF6FF" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="12,8">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="💰" FontSize="14" />
+                            <Label Text="Privatstunde: 150,00 € pro Stunde" TextColor="#1D4ED8" FontSize="13" FontAttributes="Bold" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <Button Text="Jetzt buchen"
+                            Command="{Binding BookLessonCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="#7C3AED"
+                            TextColor="White"
+                            CornerRadius="12"
+                            FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Meine Buchungen -->
+            <VerticalStackLayout Grid.Row="3" Spacing="10">
+                <Label Text="Meine Privatstunden" FontSize="17" FontAttributes="Bold" TextColor="#111827" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#7C3AED" />
+
+                <CollectionView ItemsSource="{Binding MyLessons}" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="Keine Privatstunden gebucht."
+                               HorizontalOptions="Center"
+                               TextColor="#6B7280"
+                               Margin="0,20,0,0"
+                               IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PrivateLessonCardViewModel">
+                            <Border BackgroundColor="White" StrokeThickness="0" StrokeShape="RoundRectangle 18" Margin="0,0,0,10">
+                                <Grid ColumnDefinitions="*,Auto" Padding="16" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding TeacherName}"
+                                           FontSize="16" FontAttributes="Bold" TextColor="#111827" />
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding PriceText}"
+                                           FontSize="14" FontAttributes="Bold" TextColor="#7C3AED"
+                                           VerticalOptions="Center" />
+                                    <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                           Text="{Binding Specialty}"
+                                           FontSize="12" TextColor="#6B7280" FontAttributes="Italic" />
+                                    <Label Grid.Row="2" Grid.Column="0"
+                                           Text="{Binding DateText}"
+                                           FontSize="13" TextColor="#4B5563" />
+                                    <Button Grid.Row="2" Grid.Column="1"
+                                            Text="Stornieren"
+                                            Command="{Binding Source={x:Reference PrivateLessonPageRoot}, Path=BindingContext.CancelLessonCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#FEF2F2"
+                                            TextColor="#DC2626"
+                                            CornerRadius="8"
+                                            FontSize="12"
+                                            Padding="10,6"
+                                            VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>
